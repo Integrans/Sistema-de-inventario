@@ -20,6 +20,9 @@ app.use('/',usuariosRoutes)
 app.use('/',productosRoutes)
 //app.use('/',movimientosRoutes)
 
+app.get('/', (req, res) => {
+    res.send('API Inventario Pikmin funcionando');
+});
 //Iniciar el servidor
 const port = 3000
 app.listen(port,() => {

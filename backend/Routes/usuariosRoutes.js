@@ -11,7 +11,8 @@ router.post('/login', (req,res)=>{
     }
 
     //Buscar el usuario en la base de datos
-    db.query('SELECT * FROM usuarios WHERE nombre = ? AND password = ?', [nombre,password], (err,results)=>{
+    const query = 'SELECT nombre, rol FROM usuarios WHERE nombre = ? AND password = ?'
+    db.query(query, [nombre,password], (err,results)=>{
         if(err){
             return res.status(500).send('Error en la consulta')
         }
@@ -23,12 +24,23 @@ router.post('/login', (req,res)=>{
         const usuarioEncontrado = results[0]
 
         res.status(200).send({
-            mensaje: '',
+            mensaje: 'Login exitoso',
             usuario: {
                 nombre: usuarioEncontrado.nombre,
                 rol: usuarioEncontrado.rol
             }
         })
+    })
+})
+
+//Ruta para traer todos los usuarios
+router.get('/usuarios', (req,res) => {
+    const query = 'SELECT id_usuario, nombre, rol FROM usuarios'
+    db.query(query, (err,results) => {
+        if(err){
+            return res.status(500).send('Error en la consulta')
+        }
+        res.status(200).send(results)
     })
 })
 

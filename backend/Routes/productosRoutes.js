@@ -5,7 +5,7 @@ const db = require('../conexion');
 //ruta para obtener los productos de la tabla productos
 router.get('/productos', (req,res) => {
     const query = 'SELECT * FROM productos'
-    db.query(query, (err,resullts) => {
+    db.query(query, (err,results) => {
         if(err){
             return res.status(500).send('Error en la consulta')
         }
@@ -15,16 +15,16 @@ router.get('/productos', (req,res) => {
 })
 
 //Ruta para obtener el producto usando el id
-router.get('/producto', (req,res) => {
-    const { id } = req.query
+router.get('/producto/:id', (req,res) => {
+    const { id } = req.params
 
     const query = 'SELECT id_producto, nombre, precio FROM productos WHERE id_producto = ?'
     db.query(query, [id], (err,result) => {
         if(err){
             return res.status(500).send('Error al obtener el producto')
 
-            res.json(result)
         }
+        res.json(result)
     })
 })
 
@@ -52,12 +52,12 @@ router.post('/productos', (req,res) => {
 
 //Ruta para editar un producto
 router.put('/productos/:id', (req,res) => {
-    const { id_producto } = req.params
+    const { id } = req.params
     const { nombre, descripcion, precio, stock_actual, stock_minimo} = req.body 
 
     const query = 'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock_actual=?, stock_minimo=? WHERE id_producto=?'
-
-    db.query(query, [nombre, descripcion, precio, stock_actual, stock_minimo], (err,result) => {
+    
+    db.query(query, [nombre, descripcion, precio, stock_actual, stock_minimo, id], (err,result) => {
         if(err){
             return res.status(500).send('Error al actualizar el producto')
         }
@@ -67,18 +67,20 @@ router.put('/productos/:id', (req,res) => {
 })
 
 //Ruta para eliminar un producto
-router.delete('/productos/:producto', (req,res) => {
-    const { producto } = req.params
+router.delete('/productos/:id', (req,res) => {
+    const { id } = req.params
+    db.query(
+        'DELETE FROM productos WHERE id_producto=?',
+        [id],
+        (err,result) => {
 
-    const query = `DELETE FROM productos WHERE id_producto=?`
+            if(err){
+                return res.status(500).send('Error al eliminar el producto')
+            }
 
-    db.query(query, [producto], (err,result) => {
-        if(err){
-            return res.status(500).send('Error al eliminar el producto')
+            res.send('Producto eliminado')
         }
-
-        res.send('Producto eliminado')
-    })
+    )
 })
 
 module.exports = router
