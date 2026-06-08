@@ -4,6 +4,7 @@ import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import Movimientos from './components/Movimientos';
 
 function App() {
 
@@ -18,6 +19,8 @@ function App() {
         
         {/*RUTA PARA EL DASHBOARD DESPUES DE LOGEARSE */}
         <Route path='/dashboard' element={<Dashboard />} />
+        {/*RUTA PARA EL HISTORIAL DE MOVIMIENTOS */}
+        <Route path='/movimientos' element={<Movimientos />} />
       </Routes>
     </Router>
   )
