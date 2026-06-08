@@ -10,6 +10,9 @@ const Movimientos = () => {
     useEffect(() => {
         axios.get(API_ROUTES.MOVIMIENTOS)
             .then((response) => {
+                console.log("Carga inicial:");
+                console.log(response.data);
+                console.log("¿Es arreglo?", Array.isArray(response.data));
                 setMovimientos(response.data);
             })
             .catch((error) => {
@@ -23,12 +26,19 @@ const Movimientos = () => {
             params: { filtro }
         })
         .then((response) => {
+            console.log("Búsqueda:");
+            console.log(response.data);
+            console.log("¿Es arreglo?", Array.isArray(response.data));
+
             setMovimientos(response.data);
         })
         .catch((error) => {
             console.error("Error al obtener los movimientos:", error);
         });
     };
+
+    console.log("Estado movimientos:", movimientos);
+    console.log("¿Es arreglo?", Array.isArray(movimientos));
 
     return (
         <div className="container mt-4">
@@ -69,7 +79,6 @@ const Movimientos = () => {
                         <th>Fecha</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     {movimientos.map((movimiento) => (
                         <tr key={movimiento.id_movimiento}>

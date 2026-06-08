@@ -6,5 +6,6 @@ export const API_ROUTES = {
     CREAR_PRODUCTO: `${BASE_URL}/productos`,
     ACTUALIZAR_PRODUCTO: (id) => `${BASE_URL}/productos/${id}`,
     ELIMINAR_PRODUCTO: (id) => `${BASE_URL}/productos/${id}`,
-    OBTENER_PRODUCTO_POR_ID: (id) => `${BASE_URL}/productos/?id=${id}`
+    OBTENER_PRODUCTO_POR_ID: (id) => `${BASE_URL}/productos/?id=${id}`,
+    MOVIMIENTOS: `${BASE_URL}/movimientos`
 }
