@@ -36,10 +36,17 @@ const Dashboard = () => {
     }
 
     const renderAreaComponent = () => {
-        switch(usuario.rol) {
-            case 'EMPLEADO': return <Inventario />
-        }
+    switch(usuario.rol) {
+        case 'EMPLEADO':
+            return <Inventario rol="EMPLEADO" />
+
+        case 'ADMIN':
+            return <Inventario rol="ADMIN" />
+
+        default:
+            return <h3>Rol no autorizado</h3>
     }
+}
 
     return(
         <div>

@@ -3,7 +3,7 @@ import axios from "axios"
 import Swal from "sweetalert2"
 import { API_ROUTES } from "../api/apiRoutes"
 
-const Inventario = () => {
+const Inventario = ({ rol }) => {
     const [ productos, setProductos ] = useState([])
 
     const [ modalProducto, setModalProducto ] = useState(false)
@@ -181,7 +181,7 @@ const Inventario = () => {
 
         if(stock_actual <= stock_minimo){
             return 'bg-danger text-white'
-        } else if(stock_actual <= stock_minimo+5){
+        } else if(stock_actual <= Math.round(stock_minimo+stock_minimo*0.5)){
             return 'bg-warning text-white'
         } else {
             return 'bg-success text-white'
@@ -204,14 +204,16 @@ const Inventario = () => {
             </div>
 
             {/*Boton para agregar un nuevo producto*/}
-            <div className="d-flex justify-content-end mb-3">
-                <button
-                    className="btn btn-primary"
-                    onClick={nuevoProducto}
-                >
-                    <i className="bi bi-plus-circle"></i>Nuevo producto
+            {rol === 'ADMIN' && (
+             <div className="d-flex justify-content-end mb-3">
+              <button
+                className="btn btn-primary"
+                onClick={nuevoProducto}
+              >
+                <i className="bi bi-plus-circle"></i> Nuevo producto
                 </button>
-            </div>
+             </div>
+            )}
 
             <table className="table table-bordered table-striped">
                 <thead>
@@ -221,7 +223,7 @@ const Inventario = () => {
                         <th>Descripcion</th>
                         <th>Precio</th>
                         <th>Existencias</th>
-                        <th>Acciones</th>
+                        {rol === 'ADMIN' && <th>Acciones</th>}
                     </tr>
                 </thead>
 
@@ -231,25 +233,31 @@ const Inventario = () => {
                             <td>{producto.id_producto}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.descripcion}</td>
-                            <td>{producto.precio}</td>
+                            <td>${Number(producto.precio).toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                             <td className={`text-center ${getEstadoExistenciasClass(producto)}`}>
                                 {producto.stock_actual}
                             </td>
-                            <td className="text-center">
-                                <button 
-                                    className="btn btn-warning btn-sm me-2"
-                                    onClick={() => editarProducto(producto)}
-                                >
-                                    <i className="bi bi-pencil-square"></i>
-                                </button>
+                            {rol === 'ADMIN' && (
+                                <td className="text-center">
+                                    <button 
+                                        className="btn btn-warning btn-sm me-2"
+                                        onClick={() => editarProducto(producto)}
+                                    >
+                                        <i className="bi bi-pencil-square"></i>
+                                    </button>
 
-                                <button 
+                                    <button 
                                     className="btn btn-danger btn-sm"
                                     onClick={() => borrarProducto(producto)}
                                 >
                                     <i className="bi bi-trash"></i>
+                               
                                 </button>
-                            </td>
+                                </td>
+
+                            )}
+
+                                
                         </tr>
                     ))}
                 </tbody>
