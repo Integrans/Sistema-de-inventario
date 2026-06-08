@@ -2,6 +2,8 @@ import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 
+import Inventario from "./Inventario"
+
 const Dashboard = () => {
     const location = useLocation()
     const navigate = useNavigate()
@@ -34,7 +36,9 @@ const Dashboard = () => {
     }
 
     const renderAreaComponent = () => {
-
+        switch(usuario.rol) {
+            case 'EMPLEADO': return <Inventario />
+        }
     }
 
     return(

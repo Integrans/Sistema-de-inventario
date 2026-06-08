@@ -15,11 +15,11 @@ router.get('/productos', (req,res) => {
 })
 
 //Ruta para obtener el producto usando el id
-router.get('/producto/:id', (req,res) => {
-    const { id } = req.params
+router.get('/producto/:id_producto', (req,res) => {
+    const { id_producto } = req.params
 
     const query = 'SELECT id_producto, nombre, precio FROM productos WHERE id_producto = ?'
-    db.query(query, [id], (err,result) => {
+    db.query(query, [id_producto], (err,result) => {
         if(err){
             return res.status(500).send('Error al obtener el producto')
 
@@ -45,19 +45,19 @@ router.post('/productos', (req,res) => {
         }
 
         res.status(201).send({
-            nombre, descripcion, precio, stock_actual, stock_minimo
+            id_producto: result.insertId, nombre, descripcion, precio, stock_actual, stock_minimo
         })
     })
 })
 
 //Ruta para editar un producto
-router.put('/productos/:id', (req,res) => {
-    const { id } = req.params
+router.put('/productos/:id_producto', (req,res) => {
+    const { id_producto } = req.params
     const { nombre, descripcion, precio, stock_actual, stock_minimo} = req.body 
 
     const query = 'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock_actual=?, stock_minimo=? WHERE id_producto=?'
     
-    db.query(query, [nombre, descripcion, precio, stock_actual, stock_minimo, id], (err,result) => {
+    db.query(query, [nombre, descripcion, precio, stock_actual, stock_minimo, id_producto], (err,result) => {
         if(err){
             return res.status(500).send('Error al actualizar el producto')
         }
@@ -67,11 +67,11 @@ router.put('/productos/:id', (req,res) => {
 })
 
 //Ruta para eliminar un producto
-router.delete('/productos/:id', (req,res) => {
-    const { id } = req.params
+router.delete('/productos/:id_producto', (req,res) => {
+    const { id_producto } = req.params
     db.query(
         'DELETE FROM productos WHERE id_producto=?',
-        [id],
+        [id_producto],
         (err,result) => {
 
             if(err){

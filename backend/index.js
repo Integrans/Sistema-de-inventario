@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 
 const usuariosRoutes = require('./Routes/usuariosRoutes')
 const productosRoutes = require('./Routes/productosRoutes')
-//const movimientosRoutes = require('./Routes/movimientosRoutes')
+const movimientosRoutes = require('./Routes/movimientosRoutes')
 
 //Crear la aplicación de Express
 const app = express()
@@ -18,11 +18,12 @@ app.use(bodyParser.json())
 //Rutas
 app.use('/',usuariosRoutes)
 app.use('/',productosRoutes)
-//app.use('/',movimientosRoutes)
+app.use('/',movimientosRoutes)
 
 app.get('/', (req, res) => {
     res.send('API Inventario Pikmin funcionando');
 });
+
 //Iniciar el servidor
 const port = 3000
 app.listen(port,() => {
