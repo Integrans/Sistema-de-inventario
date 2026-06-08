@@ -42,11 +42,18 @@ const Login = () => {
             })
 
             if(response.status === 200){
+                console.log(response.data);
                 Swal.fire({
                         icon: 'success',
                         title: 'Bienvenido',
                         text: 'Inicio de sesión exitoso'
                     })
+                
+                localStorage.setItem(
+                'usuario',
+                JSON.stringify(response.data.usuario)
+                );
+                
                 navigate('/dashboard', { state: { usuario: response.data.usuario } })
             }
         } catch(err){

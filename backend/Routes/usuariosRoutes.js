@@ -11,7 +11,7 @@ router.post('/login', (req,res)=>{
     }
 
     //Buscar el usuario en la base de datos
-    const query = 'SELECT nombre, rol FROM usuarios WHERE nombre = ? AND password = ?'
+    const query = 'SELECT id_usuario, nombre, rol FROM usuarios WHERE nombre = ? AND password = ?'
     db.query(query, [nombre,password], (err,results)=>{
         if(err){
             return res.status(500).send('Error en la consulta')
@@ -26,6 +26,7 @@ router.post('/login', (req,res)=>{
         res.status(200).send({
             mensaje: 'Login exitoso',
             usuario: {
+                id_usuario: usuarioEncontrado.id_usuario,
                 nombre: usuarioEncontrado.nombre,
                 rol: usuarioEncontrado.rol
             }

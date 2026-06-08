@@ -4,6 +4,7 @@ const db = require('../conexion');
 
 //ruta para obtener los productos de la tabla productos
 router.get('/productos', (req,res) => {
+    console.log("GET PRODUCTOS");
     const query = 'SELECT * FROM productos'
     db.query(query, (err,results) => {
         if(err){
@@ -51,20 +52,99 @@ router.post('/productos', (req,res) => {
 })
 
 //Ruta para editar un producto
-router.put('/productos/:id_producto', (req,res) => {
-    const { id_producto } = req.params
-    const { nombre, descripcion, precio, stock_actual, stock_minimo} = req.body 
+router.put('/productos/:id_producto', (req, res) => {
+    console.log("ENTRÓ A LA RUTA PUT");
+    const { id_producto } = req.params;
 
-    const query = 'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock_actual=?, stock_minimo=? WHERE id_producto=?'
-    
-    db.query(query, [nombre, descripcion, precio, stock_actual, stock_minimo, id_producto], (err,result) => {
-        if(err){
-            return res.status(500).send('Error al actualizar el producto')
+    const {
+        nombre,
+        descripcion,
+        precio,
+        stock_actual,
+        stock_minimo,
+        id_usuario
+    } = req.body;
+
+    console.log(req.body);
+
+    // Obtener stock actual antes de actualizar
+    const querySelect =
+        'SELECT stock_actual FROM productos WHERE id_producto = ?';
+
+    db.query(querySelect, [id_producto], (err, resultado) => {
+
+        if (err) {
+            return res.status(500).send('Error al obtener el producto');
         }
 
-        res.send('Producto actualizado')
-    })
-})
+        if (resultado.length === 0) {
+            return res.status(404).send('Producto no encontrado');
+        }
+
+        const stockAnterior = resultado[0].stock_actual;
+        const diferencia = stock_actual - stockAnterior;
+
+        // Actualizar producto
+        const queryUpdate =
+            'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock_actual=?, stock_minimo=? WHERE id_producto=?';
+
+        db.query(
+            queryUpdate,
+            [
+                nombre,
+                descripcion,
+                precio,
+                stock_actual,
+                stock_minimo,
+                id_producto
+            ],
+            (err, result) => {
+
+                if (err) {
+                    return res.status(500).send('Error al actualizar el producto');
+                }
+
+                // Si cambió el stock, registrar movimiento
+                if (diferencia !== 0) {
+
+                    const tipoMovimiento =
+                        diferencia > 0 ? 'ENTRADA' : 'SALIDA';
+
+                    const queryMovimiento = `
+                        INSERT INTO movimientos
+                        (id_producto, id_usuario, tipo_movimiento, cantidad)
+                        VALUES (?, ?, ?, ?)
+                    `;
+
+                    db.query(
+                        queryMovimiento,
+                        [
+                            id_producto,
+                            id_usuario,
+                            tipoMovimiento,
+                            Math.abs(diferencia)
+                        ],
+                        (err) => {
+
+                            if (err) {
+                                console.error(
+                                    'Error al registrar movimiento:',
+                                    err
+                                );
+                            }
+
+                            res.send('Producto actualizado');
+                        }
+                    );
+
+                } else {
+
+                    res.send('Producto actualizado');
+                }
+            }
+        );
+    });
+});
 
 //Ruta para eliminar un producto
 router.delete('/productos/:id_producto', (req,res) => {

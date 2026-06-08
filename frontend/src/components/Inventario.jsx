@@ -68,6 +68,8 @@ const Inventario = ({ rol }) => {
     }
 
     //Funcion para guardar nuevo producto o editar uno existente
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+
     const guardarProducto = () => {
         if(prodSeleccionado.isEditing) { //Actualizar producto existente
             axios.put(API_ROUTES.ACTUALIZAR_PRODUCTO(prodSeleccionado.id_producto),{
@@ -75,7 +77,8 @@ const Inventario = ({ rol }) => {
             descripcion: prodSeleccionado.descripcion,
             precio: prodSeleccionado.precio,
             stock_actual: prodSeleccionado.stock_actual,
-            stock_minimo: prodSeleccionado.stock_minimo
+            stock_minimo: prodSeleccionado.stock_minimo,
+            id_usuario: usuario.id_usuario
             })
             .then(response => {
                 //Actualizar el producto en la lista de productos
