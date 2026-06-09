@@ -6,18 +6,26 @@ const Movimientos = () => {
     const [movimientos, setMovimientos] = useState([]);
     const [filtro, setFiltro] = useState("");
 
-    // Cargar movimientos al abrir el componente
-    useEffect(() => {
+    const cargarMovimientos = () => {
         axios.get(API_ROUTES.MOVIMIENTOS)
             .then((response) => {
-                console.log("Carga inicial:");
-                console.log(response.data);
-                console.log("¿Es arreglo?", Array.isArray(response.data));
                 setMovimientos(response.data);
             })
             .catch((error) => {
                 console.error("Error al cargar movimientos:", error);
             });
+    };
+
+    useEffect(() => {
+
+        cargarMovimientos();
+
+        const intervalo = setInterval(() => {
+            cargarMovimientos();
+        }, 3000);
+
+        return () => clearInterval(intervalo);
+
     }, []);
 
     // Buscar movimientos
